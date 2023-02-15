@@ -3,17 +3,21 @@ title: "Tract to CCA"
 output: html_document
 date: "2023-02-10"
 ---
-
+# for installing packages in this code (you only need to do this once)
+```{r}
+install.packages("dplyr")
+install.packages("tidyverse")
+install.packages("tidycensus")
+install.packages("writexl")
+```
+# for loading packages for all future uses 
 ```{r}
 devtools::install_github("CMAP-REPOS/cmapgeo")
-library(cmapgeo)
-install.packages("dplyr")
 library(dplyr)
-install.packages("tidyverse")
 library(tidyverse)
-install.packages("tidycensus")
 library(tidycensus)
-install.packages("writexl")
+library(cmapgeo)
+library(tidyverse)
 library(writexl)
 ```
 # View the tracts with population split between multiple CCAs, filter for greatest value among duplicates, and export as excel table.
@@ -22,11 +26,6 @@ library(writexl)
 filter(xwalk_tract2cca, pop_pct < 1)
 Pop_geocode <-xwalk_tract2cca %>% select('geoid_tract', 'cca_num', 'pop_pct') %>% group_by(geoid_tract)%>% filter(pop_pct == max(pop_pct))
 
-```
-# If you have not loaded the writexl pacakage from your library (the first code chunk in this rmd), run Librar(writexl) below. If you for some reason don't have it installed, you'll have to also run the install.packages("writexl") line below (or in first code chunk).
-```{r}
-install.packages("writexl")
-library(writexl)
 write.csv(Pop_geocode, file = "pop_geocode.csv", quote = FALSE, row.names = FALSE)
 write_xlsx(Pop_geocode, "pop_geocode.xlsx", col_names = TRUE, format_headers = TRUE)
 
@@ -38,8 +37,6 @@ write_xlsx(Pop_geocode, "pop_geocode.xlsx", col_names = TRUE, format_headers = T
 filter(xwalk_tract2cca, hu_pct < 1)
 Hu_geocode <-xwalk_tract2cca %>% select('geoid_tract', 'cca_num', 'hu_pct') %>% group_by(geoid_tract)%>% filter(hu_pct == max(hu_pct))
 
-install.packages("writexl")
-library(writexl)
 write.csv(Hu_geocode, file = "Hu_geocode.csv", quote = FALSE, row.names = FALSE)
 write_xlsx(Hu_geocode, "Hu_geocode.xlsx", col_names = TRUE, format_headers = TRUE)
 
