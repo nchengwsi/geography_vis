@@ -13,13 +13,54 @@ install.packages("tidyverse")
 library(tidyverse)
 install.packages("tidycensus")
 library(tidycensus)
+install.packages("writexl")
+library(writexl)
 ```
-# View the block groups with housing units split between multiple CCAs
+# View the tracts with population split between multiple CCAs, filter for greatest value among duplicates, and export as excel table.
+# You will create two outputs - a csv and xlsx. Use the csv to view in R and use the xlsx (access externally in your folder, outside of RStudio) for external data analysis.
 ```{r}
-tract_sf
-cca_sf
-filter(xwalk_tract2cca, hu_pct < 1)
+filter(xwalk_tract2cca, pop_pct < 1)
+Pop_geocode <-xwalk_tract2cca %>% select('geoid_tract', 'cca_num', 'pop_pct') %>% group_by(geoid_tract)%>% filter(pop_pct == max(pop_pct))
+
 ```
+# If you have not loaded the writexl pacakage from your library (the first code chunk in this rmd), run Librar(writexl) below. If you for some reason don't have it installed, you'll have to also run the install.packages("writexl") line below (or in first code chunk).
+```{r}
+install.packages("writexl")
+library(writexl)
+write.csv(Pop_geocode, file = "pop_geocode.csv", quote = FALSE, row.names = FALSE)
+write_xlsx(Pop_geocode, "pop_geocode.xlsx", col_names = TRUE, format_headers = TRUE)
+
+```
+# Repeat above but for housing units, households, and employment. 
+#View the tracts with housing units plit between multiple CCAs, filter for greatest value among duplicates, and export as excel table.
+# You will create two outputs - a csv and xlsx. Use the csv to view in R and use the xlsx (access externally in your folder, outside of RStudio) for external data analysis.
+```{r}
+filter(xwalk_tract2cca, hu_pct < 1)
+Hu_geocode <-xwalk_tract2cca %>% select('geoid_tract', 'cca_num', 'hu_pct') %>% group_by(geoid_tract)%>% filter(hu_pct == max(hu_pct))
+
+install.packages("writexl")
+library(writexl)
+write.csv(Hu_geocode, file = "Hu_geocode.csv", quote = FALSE, row.names = FALSE)
+write_xlsx(Hu_geocode, "Hu_geocode.xlsx", col_names = TRUE, format_headers = TRUE)
+
+```
+```{r}
+filter(xwalk_tract2cca, hh_pct < 1)
+Hh_geocode <-xwalk_tract2cca %>% select('geoid_tract', 'cca_num', 'hh_pct') %>% group_by(geoid_tract)%>% filter(hh_pct == max(hh_pct))
+
+write.csv(Hh_geocode, file = "Hh_geocode.csv", quote = FALSE, row.names = FALSE)
+write_xlsx(Hh_geocode, "Hh_geocode.xlsx", col_names = TRUE, format_headers = TRUE)
+
+```
+```{r}
+filter(xwalk_tract2cca, emp_pct < 1)
+Emp_geocode <-xwalk_tract2cca %>% select('geoid_tract', 'cca_num', 'emp_pct') %>% group_by(geoid_tract)%>% filter(emp_pct == max(emp_pct))
+
+write.csv(Emp_geocode, file = "Emp_geocode.csv", quote = FALSE, row.names = FALSE)
+write_xlsx(Emp_geocode, "Emp_geocode.xlsx", col_names = TRUE, format_headers = TRUE)
+
+```
+
 # Estimate CCA-level housing vacancy rates from block group-level Census data
 ```{r}
 xwalk_tract2cca
