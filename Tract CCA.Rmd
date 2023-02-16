@@ -9,6 +9,7 @@ install.packages("dplyr")
 install.packages("tidyverse")
 install.packages("tidycensus")
 install.packages("writexl")
+install.packages("Rtools")
 ```
 # for loading packages for all future uses 
 ```{r}
